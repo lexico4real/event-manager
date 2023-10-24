@@ -9,8 +9,8 @@ import {
 
 @Entity()
 export class Category extends BaseEntity {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
+  @PrimaryGeneratedColumn('increment')
+  id: number;
 
   @Column()
   label: string;

@@ -7,6 +7,11 @@ import { Category } from './entities/category.entity';
 
 @EntityRepository(Category)
 export class CategoryRepository extends Repository<Category> {
+  private validateId(id: number) {
+    if (typeof id !== 'number') {
+      throw new BadRequestException('Invalid id. id must be a number.');
+    }
+  }
   async createCategory(
     createCategoryDto: CreateCategoryDto,
   ): Promise<Category> {
@@ -15,6 +20,7 @@ export class CategoryRepository extends Repository<Category> {
       ...createCategoryDto,
     });
     if (parentId) {
+      this.validateId(createCategoryDto.parentId);
       const parent = await this.getCategoryById(parentId);
       category.parent = parent;
     }
@@ -48,16 +54,8 @@ export class CategoryRepository extends Repository<Category> {
     return category;
   }
 
-  async getCategoryById(id: string): Promise<Category> {
-    if (id.length !== 36) {
-      throw new HttpException(
-        {
-          status: HttpStatus.BAD_REQUEST,
-          error: `invalid id: ${id}`,
-        },
-        HttpStatus.BAD_REQUEST,
-      );
-    }
+  async getCategoryById(id: number): Promise<Category> {
+    this.validateId(id);
     const query = this.createQueryBuilder('category');
     query.where('category.id = :id', { id });
     const category = await query.getOne();
@@ -73,7 +71,6 @@ export class CategoryRepository extends Repository<Category> {
     try {
       return category;
     } catch (error) {
-      console.log(error);
       new Logger().log('error', 'error', error, 'categoryRepository');
       throw new HttpException(
         {
@@ -86,10 +83,11 @@ export class CategoryRepository extends Repository<Category> {
   }
 
   async updateCategory(
-    id: string,
+    id: number,
     updateCategoryDto: UpdateCategoryDto,
   ): Promise<Category> {
     const { label } = updateCategoryDto;
+    this.validateId(id);
     const category = await this.getCategoryById(id);
     try {
       category.label = label || category.label;
@@ -120,13 +118,21 @@ export class CategoryRepository extends Repository<Category> {
     return category;
   }
 
-  async getSubCategory(parentId: string): Promise<Category> {
+  async getSubCategory(parentId: number): Promise<Category> {
+    this.validateId(parentId);
     return this.findOne(parentId, {
       relations: ['children'],
     });
   }
 
-  async moveCategory(id: string, newParentId: string): Promise<Category> {
+  async moveCategory(id: number, newParentId: number): Promise<Category> {
+    if (id === newParentId) {
+      throw new BadRequestException(
+        "A category cannot be it's own subcategory",
+      );
+    }
+    this.validateId(newParentId);
+    this.validateId(id);
     const category = await this.getCategoryById(id);
     const newParent = await this.getCategoryById(newParentId);
 
@@ -154,7 +160,8 @@ export class CategoryRepository extends Repository<Category> {
     await this.save(category);
   }
 
-  async findOneWithDeleted(id: string): Promise<Category> {
+  async findOneWithDeleted(id: number): Promise<Category> {
+    this.validateId(id);
     return await this.findOne({ id }, { withDeleted: true });
   }
 

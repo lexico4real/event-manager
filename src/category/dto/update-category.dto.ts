@@ -9,5 +9,5 @@ export class UpdateCategoryDto extends PartialType(CreateCategoryDto) {
 
   @ApiPropertyOptional()
   @IsOptional()
-  parentId?: string;
+  parentId?: number;
 }

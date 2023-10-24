@@ -22,33 +22,33 @@ export class CategoryService {
     return await this.categoryRepository.getCategory();
   }
 
-  async getCategoryById(id: string) {
+  async getCategoryById(id: number) {
     return await this.categoryRepository.getCategoryById(id);
   }
 
-  async getSubCategory(parentId: string): Promise<Category> {
+  async getSubCategory(parentId: number): Promise<Category> {
     return await this.categoryRepository.getSubCategory(parentId);
   }
 
-  async moveCategory(id: string, newParentId: string): Promise<Category> {
+  async moveCategory(id: number, newParentId: number): Promise<Category> {
     return await this.categoryRepository.moveCategory(id, newParentId);
   }
 
-  async updateCategory(id: string, updateCategoryDto: UpdateCategoryDto) {
+  async updateCategory(id: number, updateCategoryDto: UpdateCategoryDto) {
     return await this.categoryRepository.updateCategory(id, updateCategoryDto);
   }
 
-  async softDeleteCategory(id: string): Promise<void> {
+  async softDeleteCategory(id: number): Promise<void> {
     const category = await this.categoryRepository.findOne(id);
     await this.categoryRepository.softDeleteCategory(category);
   }
 
-  async restoreCategory(id: string): Promise<void> {
+  async restoreCategory(id: number): Promise<void> {
     const category = await this.categoryRepository.findOneWithDeleted(id);
     await this.categoryRepository.restoreCategory(category);
   }
 
-  async deleteCategory(id: string): Promise<void> {
+  async deleteCategory(id: number): Promise<void> {
     const category = await this.categoryRepository.findOneWithDeleted(id);
     if (category.deletedAt === null) {
       await this.categoryRepository.softDeleteCategory(category);
