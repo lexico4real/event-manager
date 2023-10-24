@@ -1,4 +1,4 @@
-import Logger from 'config/log4js/logger';
+import Logger from 'config/logger';
 import * as cluster from 'cluster';
 import * as config from 'config';
 import * as os from 'os';
