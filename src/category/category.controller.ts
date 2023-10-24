@@ -8,13 +8,13 @@ import {
   Delete,
 } from '@nestjs/common';
 import { CategoryService } from './category.service';
-import { CreateCategoryDto } from './dto/create-category.dto';
+import { AddCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ValidateId } from 'common/validate-id.decorator';
 
-@ApiTags('category')
-@Controller('category')
+@ApiTags('categories')
+@Controller('categories')
 export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
 
@@ -23,14 +23,26 @@ export class CategoryController {
     status: 201,
     description: 'The category has been successfully created.',
   })
-  createCategory(@Body() createCategoryDto: CreateCategoryDto) {
-    return this.categoryService.createCategory(createCategoryDto);
+  addCategory(@Body() addCategoryDto: AddCategoryDto) {
+    return this.categoryService.addCategory(addCategoryDto);
   }
 
   @Get()
   @ApiResponse({ status: 200, description: 'Returns all categories.' })
-  getCategory() {
-    return this.categoryService.getCategory();
+  getAllCategories() {
+    return this.categoryService.getAllCategories();
+  }
+
+  @Get('subtree/:parentId')
+  @ApiParam({ name: 'parentId', description: 'Parent ID' })
+  @ValidateId()
+  @ApiResponse({
+    status: 200,
+    description: 'Returns the subtree of the specified parent category.',
+  })
+  async getsubtree(@Param('parentId') parentId: string) {
+    console.log('first');
+    return await this.categoryService.getsubtree(+parentId);
   }
 
   @Get(':id')
@@ -40,19 +52,8 @@ export class CategoryController {
     status: 200,
     description: 'Returns the category with the specified ID.',
   })
-  getCategoryById(@Param('id') id: string) {
-    return this.categoryService.getCategoryById(+id);
-  }
-
-  @Get('subcategory/:id')
-  @ApiParam({ name: 'parentId', description: 'Parent ID' })
-  @ValidateId()
-  @ApiResponse({
-    status: 200,
-    description: 'Returns the subcategory of the specified parent category.',
-  })
-  async getSubCategory(@Param('parentId') parentId: string) {
-    return await this.categoryService.getSubCategory(+parentId);
+  fetchCategoryById(@Param('id') id: string) {
+    return this.categoryService.fetchCategoryById(+id);
   }
 
   @Patch(':id/move/:newParentId')
@@ -91,11 +92,11 @@ export class CategoryController {
     status: 200,
     description: 'The category has been successfully deleted.',
   })
-  deleteCategory(@Param('id') id: string) {
-    return this.categoryService.deleteCategory(+id);
+  removeCategory(@Param('id') id: string) {
+    return this.categoryService.removeCategory(+id);
   }
 
-  @Delete('category/:id')
+  @Delete('by/:id')
   @ApiParam({ name: 'id', description: 'Category ID' })
   @ValidateId()
   @ApiResponse({

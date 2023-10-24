@@ -8,6 +8,6 @@ export class BaseEntity {
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   updatedAt: Date;
 
-  @DeleteDateColumn()
-  deletedAt: Date;
+  @DeleteDateColumn({ nullable: true })
+  deletedAt?: Date;
 }

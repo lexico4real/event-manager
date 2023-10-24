@@ -1,7 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CategoryRepository } from './category.repository';
-import { CreateCategoryDto } from './dto/create-category.dto';
+import { AddCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { Category } from './entities/category.entity';
 import Logger from 'config/logger';
@@ -14,20 +14,20 @@ export class CategoryService {
     private categoryRepository: CategoryRepository,
   ) {}
 
-  async createCategory(createCategoryDto: CreateCategoryDto) {
-    return await this.categoryRepository.createCategory(createCategoryDto);
+  async addCategory(addCategoryDto: AddCategoryDto) {
+    return await this.categoryRepository.addCategory(addCategoryDto);
   }
 
-  async getCategory(): Promise<CreateCategoryDto[]> {
-    return await this.categoryRepository.getCategory();
+  async getAllCategories(): Promise<AddCategoryDto[]> {
+    return await this.categoryRepository.getAllCategories();
   }
 
-  async getCategoryById(id: number) {
-    return await this.categoryRepository.getCategoryById(id);
+  async fetchCategoryById(id: number) {
+    return await this.categoryRepository.fetchCategoryById(id);
   }
 
-  async getSubCategory(parentId: number): Promise<Category> {
-    return await this.categoryRepository.getSubCategory(parentId);
+  async getsubtree(parentId: number): Promise<Category> {
+    return await this.categoryRepository.getsubtree(parentId);
   }
 
   async moveCategory(id: number, newParentId: number): Promise<Category> {
@@ -48,8 +48,11 @@ export class CategoryService {
     await this.categoryRepository.restoreCategory(category);
   }
 
-  async deleteCategory(id: number): Promise<void> {
+  async removeCategory(id: number): Promise<void> {
     const category = await this.categoryRepository.findOneWithDeleted(id);
+    if (category === undefined) {
+      throw new BadRequestException(`Category with id ${id} is not found`);
+    }
     if (category.deletedAt === null) {
       await this.categoryRepository.softDeleteCategory(category);
     } else {
