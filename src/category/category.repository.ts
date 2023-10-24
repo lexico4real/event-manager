@@ -5,9 +5,16 @@ import { AddCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { Category } from './entities/category.entity';
 
+class MockLogger {
+  log(level, message, ...args) {
+    console.log(`[${level}] ${message}`, ...args);
+  }
+}
+
 @EntityRepository(Category)
 export class CategoryRepository extends Repository<Category> {
-  private validateId(id: number) {
+  private logger = new MockLogger(); // Use the mock logger
+  validateId(id: number) {
     if (typeof id !== 'number') {
       throw new BadRequestException('Invalid id. id must be a number.');
     }
@@ -25,7 +32,7 @@ export class CategoryRepository extends Repository<Category> {
     try {
       return await this.save(category);
     } catch (error) {
-      new Logger().log('error', 'error', error.message, 'categoryRepository');
+      new Logger().log('error', 'error', error, 'categoryRepository');
       if (error.code === '23505') {
         throw new HttpException(
           {

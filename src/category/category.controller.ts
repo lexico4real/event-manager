@@ -41,7 +41,6 @@ export class CategoryController {
     description: 'Returns the subtree of the specified parent category.',
   })
   async getsubtree(@Param('parentId') parentId: string) {
-    console.log('first');
     return await this.categoryService.getsubtree(+parentId);
   }
 

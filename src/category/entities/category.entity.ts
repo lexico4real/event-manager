@@ -12,7 +12,7 @@ export class Category extends BaseEntity {
   @PrimaryGeneratedColumn('increment')
   id: number;
 
-  @Column()
+  @Column({ unique: true })
   label: string;
 
   @ManyToOne(() => Category, (category) => category.children)
