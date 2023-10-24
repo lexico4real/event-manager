@@ -1,5 +1,5 @@
 import * as config from 'config';
-import Logger from 'config/log4js/logger';
+import Logger from 'config/logger';
 
 const serverConfig = config.get('server');
 const logger = new Logger();

@@ -4,7 +4,7 @@ import { AppModule } from './app.module';
 import { TransformInterceptor } from '../config/interceptor/transform.interceptor';
 import ClusterConfig from 'config/system/cluster';
 import CorsConfig from 'config/system/cors';
-import SwaggerConfig from 'config/swagger/config';
+import SwaggerConfig from 'config/swagger';
 import * as compression from 'compression';
 import 'dotenv';
 

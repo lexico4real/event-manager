@@ -9,8 +9,7 @@ services:
         - ./redis-service/config/redis.conf:/redis.conf
         - ./redis-data:/redis.conf
       command: [ "redis-server", "/redis.conf" ]
-      # networks: 
-      #   - redis-net
+
     db:
       image: postgres
       restart: always
@@ -22,8 +21,7 @@ services:
       container_name: nest-micro-service-postgres-db
       volumes:
         - ./pgdata:/var/lib/postgresql/data
-      # networks: 
-      #   - redis-net
+
     client-service:
       build: 
         context: ./client-service
@@ -51,12 +49,11 @@ services:
       container_name: client-micro-service-app
       depends_on: 
         - db
-        # - redis-server
+
       volumes: 
         - ./client-service:/app
         - /app/node_modules
-      # networks: 
-      #   - redis-net
+
     admin-service:
       build: 
         context: ./admin-service
@@ -84,12 +81,11 @@ services:
       container_name: admin-micro-service-app
       depends_on: 
         - db
-        # - redis-server
+
       volumes: 
         - ./admin-service:/app
         - /app/node_modules
-      # networks: 
-      #   - redis-net
+
     pgadmin:
       image: dpage/pgadmin4
       restart: always
@@ -106,8 +102,7 @@ services:
         - db
       networks: 
         - redis-net
-# networks: 
-#   redis-net: null
+
 volumes:
   pgdata:
   pgadmin-data:
