@@ -6,6 +6,7 @@ import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
 import { typeOrmConfig } from '../config/orm';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { CategoryModule } from './category/category.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     TypeOrmModule.forRoot({ ...typeOrmConfig, autoLoadEntities: true }),
     ScheduleModule.forRoot(),
     AuthModule,
+    CategoryModule,
   ],
   controllers: [AppController],
   providers: [AppService],
