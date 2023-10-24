@@ -2,11 +2,9 @@ server:
   port: 3000
 
 db:
-  type: 'postgres'
+  type: "postgres"
   port: 5432
-  database: 'testdb'
+  database: "event-category"
 
 jwt:
   expiresIn: 3600
-
-
